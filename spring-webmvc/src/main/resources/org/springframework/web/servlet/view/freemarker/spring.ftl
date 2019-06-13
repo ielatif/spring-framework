@@ -114,17 +114,17 @@
  *     overridden by user configuration.
  -->
 <#macro bind path>
-    <#if htmlEscape?exists>
+    <#if htmlEscape??>
         <#assign status = springMacroRequestContext.getBindStatus(path, htmlEscape)>
     <#else>
         <#assign status = springMacroRequestContext.getBindStatus(path)>
     </#if>
     <#-- assign a temporary value, forcing a string representation for any
     kind of variable. This temp value is only used in this macro lib -->
-    <#if status.value?exists && status.value?is_boolean>
+    <#if status.value?? && status.value?is_boolean>
         <#assign stringStatusValue=status.value?string>
     <#else>
-        <#assign stringStatusValue=status.value?default("")>
+        <#assign stringStatusValue=status.value!"">
     </#if>
 </#macro>
 
@@ -138,10 +138,10 @@
     <#assign status = springMacroRequestContext.getBindStatus(path, htmlEscape)>
     <#-- assign a temporary value, forcing a string representation for any
     kind of variable. This temp value is only used in this macro lib -->
-    <#if status.value?exists && status.value?is_boolean>
+    <#if status.value?? && status.value?is_boolean>
         <#assign stringStatusValue=status.value?string>
     <#else>
-        <#assign stringStatusValue=status.value?default("")>
+        <#assign stringStatusValue=status.value!"">
     </#if>
 </#macro>
 
@@ -247,7 +247,7 @@ ${stringStatusValue}</textarea>
     <@bind path/>
     <select multiple="multiple" id="${status.expression?replace('[','')?replace(']','')}" name="${status.expression}" ${attributes?no_esc}>
         <#list options?keys as value>
-        <#assign isSelected = contains(status.actualValue?default([""]), value)>
+        <#assign isSelected = contains(status.actualValue![""], value)>
         <option value="${value}"<#if isSelected> selected="selected"</#if>>${options[value]}</option>
         </#list>
     </select>
@@ -290,7 +290,7 @@ ${stringStatusValue}</textarea>
     <@bind path/>
     <#list options?keys as value>
     <#assign id="${status.expression?replace('[','')?replace(']','')}${value_index}">
-    <#assign isSelected = contains(status.actualValue?default([""]), value)>
+    <#assign isSelected = contains(status.actualValue![""], value)>
     <input type="checkbox" id="${id}" name="${status.expression}" value="${value}"<#if isSelected> checked="checked"</#if> ${attributes?no_esc}<@closeTag/>
     <label for="${id}">${options[value]}</label>${separator?no_esc}
     </#list>
@@ -380,5 +380,5 @@ ${stringStatusValue}</textarea>
  * of this library.
 -->
 <#macro closeTag>
-    <#if xhtmlCompliant?exists && xhtmlCompliant>/><#else>></#if>
+    <#if xhtmlCompliant?? && xhtmlCompliant>/><#else>></#if>
 </#macro>
